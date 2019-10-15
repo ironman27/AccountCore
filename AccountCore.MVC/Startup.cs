@@ -108,7 +108,7 @@ namespace AccountCore.MVC
             services.AddDbContext<ApplicationDbContext>((optionsBuilder) =>
             {
                 optionsBuilder
-                    .UseSqlServer(databaseConnection ?? "Server=DESKTOP-8RUTKO2;Database=AccountCore;Trusted_Connection=True;MultipleActiveResultSets=true");
+                    .UseSqlServer(databaseConnection ?? "Server=EPBYMINW8904;Database=AccountCore;Trusted_Connection=True;MultipleActiveResultSets=true");
             });
 
             return services;

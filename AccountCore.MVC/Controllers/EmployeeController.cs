@@ -44,6 +44,7 @@ namespace AccountCore.Controllers
             return View("Edit");
         }
 
+        [HttpPost]
         public async Task<IActionResult> EditAsync(Contract.Employee employee)
         {
             if (!ModelState.IsValid)
