@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AccountCore.BussinessLayer.Employee;
 using Microsoft.AspNetCore.Mvc;
 
+using Contracts = AccountCore.Contract.Models;
+
 namespace AccountCore.Controllers
 {
     public class EmployeeController : Controller
@@ -28,7 +30,7 @@ namespace AccountCore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAsync(Contract.Employee employee)
+        public async Task<IActionResult> AddAsync(Contracts.Employee employee)
         {
             if (!ModelState.IsValid)
             {
@@ -45,7 +47,7 @@ namespace AccountCore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditAsync(Contract.Employee employee)
+        public async Task<IActionResult> EditAsync(Contracts.Employee employee)
         {
             if (!ModelState.IsValid)
             {

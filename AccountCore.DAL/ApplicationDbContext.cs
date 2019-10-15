@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AccountCore.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccountCore.DAL
 {

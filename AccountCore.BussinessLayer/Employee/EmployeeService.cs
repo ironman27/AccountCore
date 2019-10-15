@@ -7,8 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Contract = AccountCore.Contract;
-using Entities = AccountCore.DAL;
+using Contracts = AccountCore.Contract.Models;
+using Entities = AccountCore.DAL.Models;
 
 namespace AccountCore.BussinessLayer
 {
@@ -17,14 +17,15 @@ namespace AccountCore.BussinessLayer
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public EmployeeService(ApplicationDbContext context)
+        public EmployeeService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<int> AddAsync(Contract.Employee employee)
+        public async Task<int> AddAsync(Contracts.Employee employee)
         {
-            var result = _context.Employees.Add(_mapper.Map<Contract.Employee, Entities.Employee>(employee));
+            var result = _context.Employees.Add(_mapper.Map<Contracts.Employee, Entities.Employee>(employee));
             await _context.SaveChangesAsync();
 
             return result.Entity.EmployeeId;
@@ -38,14 +39,14 @@ namespace AccountCore.BussinessLayer
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Contract.Employee> GetAsync(int id)
+        public async Task<Contracts.Employee> GetAsync(int id)
         {
-            return  _mapper.Map<Entities.Employee, Contract.Employee>(await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id));
+            return  _mapper.Map<Entities.Employee, Contracts.Employee>(await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id));
         }
 
-        public async Task<GridData<Contract.Employee>> GetDataAsync(int draw, string search, int skip, int take)
+        public async Task<GridData<Contracts.Employee>> GetDataAsync(int draw, string search, int skip, int take)
         {
-            var result = new GridData<Contract.Employee> { Draw = draw };
+            var result = new GridData<Contracts.Employee> { Draw = draw };
 
             async Task LoadRecordsTotal() => result.RecordsTotal = await GetCountAsync(null);
             async Task LoadRecordsFiltered() => result.RecordsFiltered = await GetCountAsync(search);
@@ -76,17 +77,12 @@ namespace AccountCore.BussinessLayer
             return await Query(search, false).CountAsync();
         }
 
-        private async Task<List<Contract.Employee>> GetAsync(string search, int skip, int take)
+        private async Task<List<Contracts.Employee>> GetAsync(string search, int skip, int take)
         {
-            return _mapper.Map<List<Entities.Employee>, List<Contract.Employee>>(await Query(search, true).Skip(skip).Take(take).ToListAsync());
+            return _mapper.Map<List<Entities.Employee>, List<Contracts.Employee>>(await Query(search, true).Skip(skip).Take(take).ToListAsync());
         }
-
-        //public Task RestoreAsync(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public async Task UpdateAsync(Contract.Employee employee)
+        
+        public async Task UpdateAsync(Contracts.Employee employee)
         {
             var entity = await _context.Employees.FirstAsync(c => c.EmployeeId == employee.EmployeeId);
             _mapper.Map(employee, entity);

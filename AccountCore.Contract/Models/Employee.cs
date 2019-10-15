@@ -1,7 +1,4 @@
-﻿using AccountCore.Contract.Models;
-using System;
-
-namespace AccountCore.Contract
+﻿namespace AccountCore.Contract.Models
 {
     public class Employee
     {

@@ -1,19 +1,33 @@
 ﻿using AutoMapper;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Entities = AccountCore.DAL;
-using Contract = AccountCore.Contract;
+using Entities = AccountCore.DAL.Models;
+using Contracts = AccountCore.Contract.Models;
 
 namespace AccountCore.BussinessLayer.Mappings
 {
+    public class EnumValueConverter<TSourceMember, TDestinationMember> : IValueConverter<TSourceMember, TDestinationMember>
+            where TSourceMember : struct
+            where TDestinationMember : struct
+    {
+        public TDestinationMember Convert(TSourceMember sourceMember, ResolutionContext context)
+        {
+            var name = Enum.GetName(typeof(TSourceMember), sourceMember);
+
+            return Enum.Parse<TDestinationMember>(name);
+        }
+    }
+
     public class MappingProfile : Profile
     {
         public MappingProfile()
         {
-            CreateMap<Entities.Employee, Contract.Employee>();
+            CreateMap<Entities.Employee, Contracts.Employee>()
+                .ForMember(d => d.Position, opt => opt.ConvertUsing<Entities.Position>(new EnumValueConverter<Entities.Position, Contracts.Position>(), u => u.Position));
+                
 
-            CreateMap<Contract.Employee, Entities.Employee>();
+            CreateMap<Contracts.Employee, Entities.Employee>()
+            //.ForMember(i => i., opt => opt.Ignore())
+            ;
         }
     }
 }

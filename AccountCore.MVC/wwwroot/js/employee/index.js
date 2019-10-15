@@ -42,7 +42,7 @@ function bindEmployees(gridId) {
     };
 
     var popupExtraSettings = {
-        "pageLength": 5,
+        "pageLength": 10,
         "bLengthChange": false
     };
 

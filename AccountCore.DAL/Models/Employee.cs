@@ -1,7 +1,6 @@
-﻿using AccountCore.DAL.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace AccountCore.DAL
+namespace AccountCore.DAL.Models
 {
     public class Employee
     {

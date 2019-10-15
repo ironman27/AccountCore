@@ -67,7 +67,7 @@ namespace AccountCore.MVC
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Employee}/{action=Index}/{id?}");
             });
         }
     }
@@ -94,21 +94,12 @@ namespace AccountCore.MVC
 
         public static IServiceCollection AddApplicationDbContext(this IServiceCollection services, IConfiguration configuration)
         {
-            var isLocalDatabaseConnectionString = configuration["isLocalDatabaseConnection"];
-            string databaseConnection;
-            if (isLocalDatabaseConnectionString != null && bool.TryParse(isLocalDatabaseConnectionString, out var isLocalDatabaseConnection) && isLocalDatabaseConnection)
-            {
-                databaseConnection = configuration.GetConnectionString("DatabaseConnection");
-            }
-            else
-            {
-                databaseConnection = configuration["SQLConnectionString"];
-            }
+            var databaseConnection = configuration.GetConnectionString("DatabaseConnection");
 
             services.AddDbContext<ApplicationDbContext>((optionsBuilder) =>
             {
                 optionsBuilder
-                    .UseSqlServer(databaseConnection ?? "Server=EPBYMINW8904;Database=AccountCore;Trusted_Connection=True;MultipleActiveResultSets=true");
+                    .UseSqlServer(databaseConnection);
             });
 
             return services;
