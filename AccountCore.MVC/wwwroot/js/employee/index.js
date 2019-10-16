@@ -11,16 +11,15 @@ function bindEmployees(gridId) {
     var columns = [];
     columns.push({ "data": "name" });
     columns.push({ "data": "salaryPerHour" });
-    //columns.push({ "data": "manager" });
+    columns.push({ "data": "managerName" });
     columns.push({ "data": "position" });
    
     columns.push({
-        "data": { employeeId: "employeeId" },
+        "data": { personId: "personId" },
         "render": function (data) {
-            var btnEdit = "<a href='/Employee/Edit?id=" + data.employeeId + "' class='btn btn-default btn-xs' title='Edit'><i class='fa fa-pencil'></i></a>";
-            var btnDelete = "<a class='btn btn-danger btn-xs' style='margin-left:2px' onclick=DeleteEmployee('" + data.employeeId + "') title='Delete'><i class='fa fa-trash'></i></a>";
-            //var btnRestore = (data.isDeleted === true) ? "<a class='btn btn-success btn-xs' style='margin-left:2px' onclick=RestoreEmployee('" + data.employeeId + "') title='Restore'><i class='fa fa-backward'></i></a>" : "";
-            return btnEdit + btnDelete /*+ btnRestore*/;
+            var btnEdit = "<a href='/Employee/Edit?id=" + data.personId + "' class='btn btn-default btn-xs' title='Edit'><i class='fa fa-pencil'></i></a>";
+            var btnDelete = "<a class='btn btn-danger btn-xs' style='margin-left:2px' onclick=DeleteEmployee('" + data.personId + "') title='Delete'><i class='fa fa-trash'></i></a>";
+            return btnEdit + btnDelete;
         }
     });
 
@@ -75,28 +74,6 @@ function DeleteEmployee(id) {
         });
 }
 
-function RestoreEmployee(id) {
-    swal({
-        title: "Are you sure want to Restore?",
-        text: "Are you sure want to Restore?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "green",
-        confirmButtonText: "Yes, restore it!",
-        closeOnConfirm: true
-    },
-        function () {
-            $.ajax({
-                type: 'PUT',
-                url: apiEmployeeUrl + '/' + id,
-                success: function (data) {
-                    if (data.success) {
-                        ShowMessage(data.message);
-                        dataTableEmployees.ajax.reload();
-                    } else {
-                        ShowMessageError(data.message);
-                    }
-                }
-            });
-        });
+function ShowMessage(msg) {
+    toastr.success(msg);
 }

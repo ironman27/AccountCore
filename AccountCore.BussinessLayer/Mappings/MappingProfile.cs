@@ -22,12 +22,15 @@ namespace AccountCore.BussinessLayer.Mappings
         public MappingProfile()
         {
             CreateMap<Entities.Employee, Contracts.Employee>()
-                .ForMember(d => d.Position, opt => opt.ConvertUsing<Entities.Position>(new EnumValueConverter<Entities.Position, Contracts.Position>(), u => u.Position));
-                
+                .ForMember(d => d.ManagerName, opt => opt.MapFrom(v => v.Manager != null ? v.Manager.Name : ""))
+                //.ForMember(d => d.Position, opt => opt.ConvertUsing<Entities.Position>(new EnumValueConverter<Entities.Position, Contracts.Position>(), u => u.Position))
+                ;
 
             CreateMap<Contracts.Employee, Entities.Employee>()
             //.ForMember(i => i., opt => opt.Ignore())
             ;
+
+            CreateMap<Entities.Manager, Contracts.Manager>();
         }
     }
 }

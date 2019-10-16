@@ -5,30 +5,49 @@ namespace AccountCore.DAL
 {
     public class ApplicationDbContext : DbContext
     {
+        public virtual DbSet<Person> People { get; set; }
+
         public virtual DbSet<Employee> Employees { get; set; }
+
+        public virtual DbSet<Manager> Managers { get; set; }
+
         public virtual DbSet<TimeLog> TimeLogs { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
 
-        //public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        //{
-        //}
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Employee>().ToTable("Employees");
+
+            modelBuilder.Entity<Manager>().ToTable("Managers");
+
+            modelBuilder.Entity<Employee>()
+               .HasOne(v => v.Manager)
+               .WithMany(b => b.Employees)
+               .IsRequired()
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TimeLog>()
+              .HasOne(v => v.Employee)
+              .WithMany(b => b.TimeLogs)
+              .IsRequired()
+              .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Manager>().HasData(
+                new Manager { PersonId = 1, Name = "Tom", SalaryPerHour = 15 },
+                new Manager { PersonId = 2, Name = "Fred", SalaryPerHour = 15 }
+             );
+
             modelBuilder.Entity<Employee>().HasData(
-               new Employee { EmployeeId = 1, Name = "Tom", Position = Models.Position.Manager, SalaryPerHour = 15 },
-               new Employee { EmployeeId = 2, Name = "Fred", Position = Models.Position.Manager, SalaryPerHour = 15 },
+                new Employee { PersonId = 11, Name = "Sam", SalaryPerHour = 10, ManagerId = 1 },
+                new Employee { PersonId = 12, Name = "Dan", SalaryPerHour = 11, ManagerId = 1 },
 
-               new Employee { EmployeeId = 11, Name = "Sam", Position = Models.Position.Manager, SalaryPerHour = 10, ManagerId = 1 },
-               new Employee { EmployeeId = 12, Name = "Dan", Position = Models.Position.Manager, SalaryPerHour = 11, ManagerId = 1 },
-
-               new Employee { EmployeeId = 21, Name = "Ken", Position = Models.Position.Manager, SalaryPerHour = 9, ManagerId = 2 },
-               new Employee { EmployeeId = 22, Name = "Ban", Position = Models.Position.Manager, SalaryPerHour = 8, ManagerId = 2 },
-               new Employee { EmployeeId = 23, Name = "Ted", Position = Models.Position.Manager, SalaryPerHour = 7, ManagerId = 2 }
-               );
+                new Employee { PersonId = 21, Name = "Ken", SalaryPerHour = 9, ManagerId = 2 },
+                new Employee { PersonId = 22, Name = "Ban", SalaryPerHour = 8, ManagerId = 2 },
+                new Employee { PersonId = 23, Name = "Ted", SalaryPerHour = 7, ManagerId = 2 }
+                );
         }
     }
 }

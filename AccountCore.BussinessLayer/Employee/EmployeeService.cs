@@ -28,7 +28,7 @@ namespace AccountCore.BussinessLayer
             var result = _context.Employees.Add(_mapper.Map<Contracts.Employee, Entities.Employee>(employee));
             await _context.SaveChangesAsync();
 
-            return result.Entity.EmployeeId;
+            return result.Entity.PersonId;
         }
 
         public async Task DeleteAsync(int id)
@@ -41,7 +41,7 @@ namespace AccountCore.BussinessLayer
 
         public async Task<Contracts.Employee> GetAsync(int id)
         {
-            return  _mapper.Map<Entities.Employee, Contracts.Employee>(await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id));
+            return  _mapper.Map<Entities.Employee, Contracts.Employee>(await _context.Employees.FirstOrDefaultAsync(e => e.PersonId == id));
         }
 
         public async Task<GridData<Contracts.Employee>> GetDataAsync(int draw, string search, int skip, int take)
@@ -59,14 +59,16 @@ namespace AccountCore.BussinessLayer
 
         private IQueryable<Entities.Employee> Query(string search, bool order)
         {
-            var result = _context.Employees.AsQueryable();
+            var result = _context.Employees
+                .Include(e => e.Manager)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
                 result = result.Where(c => c.Name.Contains(search));
 
             if (order)
             {
-                result = result.OrderBy(c => c.EmployeeId);
+                result = result.OrderBy(c => c.PersonId);
             }
 
             return result;
@@ -84,7 +86,7 @@ namespace AccountCore.BussinessLayer
         
         public async Task UpdateAsync(Contracts.Employee employee)
         {
-            var entity = await _context.Employees.FirstAsync(c => c.EmployeeId == employee.EmployeeId);
+            var entity = await _context.Employees.FirstAsync(c => c.PersonId == employee.PersonId);
             _mapper.Map(employee, entity);
 
             await _context.SaveChangesAsync();
